@@ -7,8 +7,7 @@ try:
         port="3306",
         user="trong",
         password="c757GL28zN",
-        database="trong",
-        ssl_disabled=True
+        database="trong"
     )
     if mydb.is_connected():
         st.title("pass")  # If connected successfully
