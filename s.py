@@ -1,3 +1,4 @@
+import streamlit as st
 import mysql.connector
 
 try:
@@ -11,7 +12,7 @@ try:
         ssl_disabled=True
     )
     if mydb.is_connected():
-        print("pass")  # If connected successfully
+        st.write("pass")  # If connected successfully
         mycursor = mydb.cursor()
 except mysql.connector.Error as err:
-    print("Connection Error:", err)
+    st.write("Connection Error:", err)
