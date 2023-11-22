@@ -2,47 +2,43 @@ import streamlit as st
 import mysql.connector
 import ast
 
-try:
-    mydb = mysql.connector.connect(
+# Connect to MySQL database
+mydb = mysql.connector.connect(
         host="139.5.147.31",
         port="3306",
         user="trong",
         password="c757GL28zN",
-        database="trong"
-    )
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT OrderCode, Product, TotalPrice, CustomerNote FROM customer_order")
-    data = mycursor.fetchall()
+        database="trong",
+        ssl_disabled=True
+)
+cursor = mydb.cursor()
+cursor.execute("SELECT OrderCode, Product, TotalPrice, CustomerNote FROM customer_order")
+data = cursor.fetchall()
 
-    st.title('รายการคำสั่งซื้อทั้งหมด')
+st.title('a')
 
-    for product in data:
-        OrderCode, Product, TotalPrice, CustomerNote = product
-        product_dict = ast.literal_eval(Product)
-        with st.form(key=f'form_{OrderCode}'):
-            st.write(OrderCode)
-            st.write("**สินค้า:**")
-            for item_name, item_quantity in product_dict.items():
-                st.write(f"- {item_name} จำนวน {item_quantity}")
-                st.write(f'**ราคารวม:** :red[{TotalPrice} ฿]')
-                st.write(f'**โน้ตถึงร้านค้า:** {CustomerNote}')
-            if st.form_submit_button(label='Finish', use_container_width=True):
-                        # Insert into history_order table
-                    mycursor.execute("INSERT INTO history_order (ordercode) VALUES (%s)", (OrderCode,))
-                    mydb.commit()
-                    
-                    # Delete from orders table
-                    mycursor.execute("DELETE FROM customer_order WHERE OrderCode=%s", (OrderCode,))
-                    mydb.commit()
-                    
-                    st.toast(f'Order {OrderCode} deleted successfully! The order is ready for pickup.', icon='❎')
+for product in data:
+    OrderCode, Product, TotalPrice, CustomerNote = product
+    product_dict = ast.literal_eval(Product)
+    with st.form(key=f'form_{OrderCode}'):
+        st.write(OrderCode)
+        st.write("**goods**")
+        for item_name, item_quantity in product_dict.items():
+            st.write(f"- {item_name} จำนวน {item_quantity}")
+        st.write(f'**totalprice:** :red[{TotalPrice} ฿]')
+        st.write(f'**CustomerNote:** {CustomerNote}')
+        
+        if st.form_submit_button(label='Finish', use_container_width=True):
+            # Insert into history_order table
+            cursor.execute("INSERT INTO history_order (ordercode) VALUES (%s)", (OrderCode,))
+            mydb.commit()
+            
+            # Delete from orders table
+            cursor.execute("DELETE FROM customer_order WHERE OrderCode=%s", (OrderCode,))
+            mydb.commit()
+            
+            st.toast(f'Order {OrderCode} deleted successfully! The order is ready for pickup.', icon='❎')
 
-        # เมื่อลูปสิ้นสุด ปิดการเชื่อมต่อ
-        mydb.commit()
-
-    # ปิด cursor และ connection นอกลูป
-    mycursor.close()
-    mydb.close()
-except mysql.connector.Error as err:
-    st.error(f"เกิดข้อผิดพลาดในการเชื่อมต่อ MySQL: {err}")
-
+# Close the cursor and database connection outside the loop
+cursor.close()
+mydb.close()
