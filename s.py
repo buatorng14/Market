@@ -8,9 +8,9 @@ mydb = mysql.connector.connect(
         password="c757GL28zN",
         database="trong"
 )
-mycursor = mydb.cursor()
-mycursor.execute("SELECT OrderCode, Product, TotalPrice, CustomerNote FROM customer_order")
-data = mycursor.fetchall()
+cursor = mydb.cursor()
+cursor.execute("SELECT OrderCode, Product, TotalPrice, CustomerNote FROM customer_order")
+data = cursor.fetchall()
 
 st.title('รายการคำสั่งซื้อทั้งหมด')
 
@@ -27,15 +27,15 @@ for product in data:
         # ใส่ st.form_submit_button() ภายในบล็อกของ with st.form()
         if st.form_submit_button(label='Finish', use_container_width=True):
             # Insert into history_order table
-            mycursor.execute("INSERT INTO history_order (ordercode) VALUES (%s)", (OrderCode,))
+            cursor.execute("INSERT INTO history_order (ordercode) VALUES (%s)", (OrderCode,))
             mydb.commit()
             
             # Delete from orders table
-            mycursor.execute("DELETE FROM customer_order WHERE OrderCode=%s", (OrderCode,))
+            cursor.execute("DELETE FROM customer_order WHERE OrderCode=%s", (OrderCode,))
             mydb.commit()
             
             st.toast(f'Order {OrderCode} deleted successfully! The order is ready for pickup.', icon='❎')
 
 # Close the cursor and database connection outside the loop
-mycursor.close()
+cursor.close()
 mydb.close()
