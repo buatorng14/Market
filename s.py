@@ -1,4 +1,5 @@
 import streamlit as st
+import mysql.connector
 
 #ติดต่อฐานข้อมูล MySQL
 mydb =  mysql.connector.connect(
