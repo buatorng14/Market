@@ -10,7 +10,7 @@ mydb =  mysql.connector.connect(
         database="trong"
 )
 mycursor = mydb.cursor()
-mycursor.execute("SELECT IDproduct, NameProduct, PricePerUnit, Image FROM ProduceInfo")
+mycursor.execute("SELECT OrderCode, Product, TotalPrice, CustomerNote FROM customer_order")
 data = mycursor.fetchall()
 
 st.title('รายการคำสั่งซื้อทั้งหมด')
