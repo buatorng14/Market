@@ -1,5 +1,4 @@
 import streamlit as st
-import ast
 import mysql.connector
 # Connect to the MySQL database
 mydb = mysql.connector.connect(
